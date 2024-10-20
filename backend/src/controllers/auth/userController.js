@@ -138,4 +138,6 @@ export const logoutUser = asyncHandler(async (req , res) =>{
 
 
 
- 
+export const getUser = asyncHandler(async (req , res) =>{
+    // get user dwtails from the token ---> exclude password
+})
