@@ -1,6 +1,8 @@
 import asyncHandler from "express-async-handler";
+import jwt from "jsonwebtoken";
+import User from "../models/auth/UserModel.js";
 
-export const protect = asyncHandler(async (req , res) =>{
+export const protect = asyncHandler(async (req , res , next) =>{
 
     try {
         // check if user is logged in
@@ -14,13 +16,19 @@ export const protect = asyncHandler(async (req , res) =>{
         const decoded = jwt.verify(token , process.env.JWT_SECRET);
 
         //get user details from the token ----> exlude password
-        const user = await User.findOne(decoded.id).select("-password");
+        const user = await User.findById(decoded.id).select("-password");
 
         //check if user exists
         if(!user){
-            res.status(401).json({message:"User not found!"});
+            res.status(404).json({message:"User not found!"});
         }
+
+        //set user details in the request object
+        req.user = user;
+
+        next();
     } catch (error) {
-        
+        // 401 Unauthorized
+        res.status(401).json({message:"Not authorized , token failed!"});
     }
-})
+});

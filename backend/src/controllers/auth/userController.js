@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import User from '../../models/auth/UserModel.js';
 import generateToken from '../../helpers/generateToken.js';
 import bcrypt from 'bcrypt';
+import e from 'express';
 
 export const registerUser = asyncHandler(async (req , res) => {
     
@@ -46,7 +47,7 @@ export const registerUser = asyncHandler(async (req , res) => {
         path: "/",
         httpOnly: true,
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: true,
+        secure: process.env.NODE_ENV === 'production' ? true : false, // Only secure in production
     })
 
 
@@ -111,8 +112,8 @@ export const loginUser = asyncHandler(async (req , res) => {
             httpOnly: true,
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
             sameSite: true,
-            secure: true,
-        })
+            secure: process.env.NODE_ENV === 'production' ? true : false, // Only secure in production
+        });
 
         // send back the user and the token in the response to the client 
         res.status(200).json({
@@ -133,11 +134,51 @@ export const loginUser = asyncHandler(async (req , res) => {
 export const logoutUser = asyncHandler(async (req , res) =>{
     res.clearCookie("token");
 
-    res.status(200).json({message: "User logged out"});
+    res.status(200).json({message: "User logged out"}); 
 })
 
 
-
+ // get user profile
 export const getUser = asyncHandler(async (req , res) =>{
     // get user dwtails from the token ---> exclude password
-})
+    const user = await User.findById(req.user._id).select("-password");
+
+    if(user){
+        res.status(200).json(user);
+    } else { 
+        // 404 Not Found 
+        res.status(404).json({message: "User not found"});
+    }
+
+});
+
+// update user profile
+export const updateUser = asyncHandler(async (req , res) => {
+    // get user details from the token ---> protect middleware 
+    const user = await User.findById(req.user._id); 
+    
+    if (user){
+        // user properties to update
+        const {name , bio , photo} = req.body;
+        // update user properties
+        user.name = req.body.name || user.name;
+        user.bio = req.body.bio || user.bio;
+        user.photo = req.body.photo || user.photo;
+
+        const updated = await user.save(); 
+
+        res.status(200).json({
+          id: updated._id,
+          name: updated.name,
+          email: updated.email,
+          role: updated.role,
+          photo: updated.photo,
+          bio: updated.bio,
+          isVerified: updated.isVerified
+        });
+    }else{
+        // 404 Not Found
+        res.status(404).json({message: "User not found"});
+    };
+
+});

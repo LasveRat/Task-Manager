@@ -1,6 +1,12 @@
 import express from "express";
-import { logoutUser, registerUser } from "../controllers/auth/userController.js";
-import { loginUser } from "../controllers/auth/userController.js";
+import {
+    getUser,
+    loginUser,
+    logoutUser,
+    registerUser,
+    updateUser,
+} from "../controllers/auth/userController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 
 const router = express.Router();
@@ -9,7 +15,8 @@ const router = express.Router();
 router.post("/register" , registerUser);
 router.post("/login" , loginUser);
 router.get("/logout" , logoutUser);
-router.get("/profile" , protect , getUser);
+router.get("/user" , protect , getUser);
+router.patch("/user" , protect , updateUser); 
 
 
 
