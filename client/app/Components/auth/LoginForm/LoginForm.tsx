@@ -2,8 +2,8 @@
 import { useUserContext } from "@/context/userContext";
 import React from "react";
 
-function RegisterForm() {
-  const { registerUser, userState, handlerUserInput } = useUserContext();
+function LoginForm() {
+  const { loginUser, userState, handlerUserInput } = useUserContext();
   const { name, email, password } = userState;
   const [showPassword, setShowPassword] = React.useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
@@ -12,31 +12,17 @@ function RegisterForm() {
     <form className="m-[2rem] px-10 py-14 rounded-lg bg-white w-full max-w-[520px]">
       <div className="relative z-10">
         <h1 className="mb-2 text-center text-[1.35rem] font-medium">
-          Register for an Account
+          Login to Your Account
         </h1>
         <p className="mb-8 px-[2rem] text-center text-[#999] text-[14px]">
-          Create an account. Already have an account?{" "}
+          Login Now. Don't have an account?{" "}
           <a
-            href="/Login"
+            href="/Register"
             className="font-bold text-[#29be67] hover:text-[#6255d6] transition-all duration-300"
           >
-            Login here
+            Register here
           </a>
         </p>
-        <div className="flex flex-col">
-          <label htmlFor="name" className="mb-1 text-[#999]">
-            Full name
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => handlerUserInput("name")(e)}
-            name="name"
-            className="px-4 py-3 border-[2px] rounded-md outline-[#2ECC71] text-gray-800"
-            placeholder="John Doe"
-          />
-        </div>
         <div className="mt-[1rem] flex flex-col">
           <label htmlFor="email" className="mb-1 text-[#999]">
             Email
@@ -75,14 +61,22 @@ function RegisterForm() {
             )}
           </button>
         </div>
+        <div className="mt-4 flex justify-end">
+          <a
+            href="/forgot-password"
+            className="font-bold text-[#29be67] hover:text-[#6255d6] transition-all duration-300"
+          >
+            Forgot password?
+          </a>
+        </div>
         <div className="flex">
           <button
             type="button"
-            disabled={!name || !email || !password}
-            onClick={registerUser}
-            className="mt-[3.5rem] flex-1 px-4 py-3 font-bold bg-[#2ECC71] text-white rounded-md hover:bg-[#239251] transition-colors duration-400"
+            disabled={!email || !password}
+            onClick={loginUser}
+            className="mt-[1.5rem] flex-1 px-4 py-3 font-bold bg-[#2ECC71] text-white rounded-md hover:bg-[#239251] transition-colors duration-400"
           >
-            Register Now
+            Login
           </button>
         </div>
       </div>
@@ -90,4 +84,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default LoginForm;
