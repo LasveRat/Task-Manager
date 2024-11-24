@@ -122,6 +122,56 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // get user details
+    const getUser = async () => {
+        setLoading(true);
+        try {
+        const res = await axios.get(`${serverUrl}/api/v1/user`, {
+            withCredentials: true, // send cookies to the server
+        });
+
+        setUser((prevState) => {
+            return {
+            ...prevState,
+            ...res.data,
+            };
+        });
+
+        setLoading(false);
+        } catch (error) {
+        console.log("Error getting user details", error);
+        toast.error(error.response.data.message);
+        setLoading(false);
+        }
+    };
+
+    // update user details
+    const updateUser = async (e , data) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+        const res = await axios.patch(`${serverUrl}/api/v1/user`, data, {
+            withCredentials: true, // send cookies to the server
+        });
+        
+        // update the user state
+        setUser((prevState) => {
+            return {
+            ...prevState,
+            ...res.data,
+            };
+        });
+        toast.success("User updated successfully");
+        setLoading(false);
+        } catch (error) {
+        console.log("Error updating user details", error);
+        toast.error(error.response.data.message);
+        setLoading(false);
+        }
+    };
+
+
     // dynamic form handler
 
     const handlerUserInput = (name) => (e) =>{
@@ -136,7 +186,14 @@ export const UserContextProvider = ({ children }) => {
     };
 
     useEffect(() => {
-       userLoginStatus();
+       const loginStatusGetUser = async() => {
+            const isLoggedIn = await userLoginStatus();
+            if (isLoggedIn){
+                   getUser();
+            }
+       }
+
+       loginStatusGetUser();
     }, []);
 
     return (
@@ -146,7 +203,10 @@ export const UserContextProvider = ({ children }) => {
                 userState,
                 handlerUserInput,
                 loginUser,
-                logoutUser
+                logoutUser,
+                userLoginStatus,
+                user,
+                updateUser,
                 }}>
             {children}
         </UserContext.Provider>
