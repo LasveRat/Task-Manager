@@ -5,7 +5,7 @@ import { useState } from "react";
 // import ChangePasswordForm from "./Components/auth/ChangePasswordForm/ChangePasswordForm";
 
 export default function Home() {
-  useRedirect("/login");
+  useRedirect("/Login");
   const {
     logoutUser,
     user,
