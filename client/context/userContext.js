@@ -1,11 +1,12 @@
-
 import axios from 'axios';
+import { get } from 'http';
 import {useRouter} from 'next/navigation';
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, use } from "react";
 import toast from 'react-hot-toast';
 
 const UserContext = React.createContext();
 
+// set axios to inccude credintials with every request
 axios.defaults.withCredentials = true;
 
 export const UserContextProvider = ({ children }) => {
@@ -15,6 +16,7 @@ export const UserContextProvider = ({ children }) => {
     const router = useRouter();
 
     const [user , setUser] = useState({});
+    const [allUsers , setAllUsers] = useState([]);
     const [userState , setUserState] = useState({
         name: "",
         email: "",
@@ -219,7 +221,7 @@ export const UserContextProvider = ({ children }) => {
             }
     }
 
-  // forgot password
+  // forgot password email
   const forgotPasswordEmail = async (email) => {
     setLoading(true);
     try {
@@ -240,53 +242,147 @@ export const UserContextProvider = ({ children }) => {
         }
         };
 
+  // reset password
+  const resetPassword = async (token, password) => {
+    setLoading(true);
+
+    try {
+      const res = await axios.post(
+        `${serverUrl}/api/v1/reset-password/${token}`,
+        {
+          password,
+        },
+        {
+          withCredentials: true, // send cookies to the server
+        }
+      );
+
+      toast.success("Password reset successfully");
+      setLoading(false);
+      // redirect to login page
+      router.push("/Login");
+    } catch (error) {
+      console.log("Error resetting password", error);
+      toast.error(error.response.data.message);
+      setLoading(false);
+    }
+  };
 
 
+  // change password 
+    const changePassword = async (currentPassword , newPassword) => {
+        setLoading(true);
+        try {
+        const res = await axios.patch(
+            `${serverUrl}/api/v1/change-password`,
+            { currentPassword, newPassword },   
+            {
+            withCredentials: true, // send cookies to the server
+            }
+        );
+    
+        toast.success("Password changed successfully");
+        setLoading(false);
+        } catch (error) {
+        console.log("Error changing password", error);
+        toast.error(error.response.data.message);
+        setLoading(false);
+        }
+    }
 
-    // dynamic form handler
+  // admin routes
+  const getAllUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${serverUrl}/api/v1/admin/users`, {
+        withCredentials: true, // send cookies to the server
+      });
 
-    const handlerUserInput = (name) => (e) =>{
-        const value = e.target.value;
+      setAllUsers(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.log("Error getting all users", error);
+      toast.error(error.response.data.message);
+      setLoading(false);
+    }
+  };
 
-        setUserState((prevState) => ({
-            ...prevState, 
-            [name]: value,
+   // dynamic form handler
+   const handlerUserInput = (name) => (e) => {
+    const value = e.target.value;
 
-        }))
+    setUserState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
+  // delete user
+  const deleteUser = async (id) => {
+    setLoading(true);
+    try {
+        console.log("Deleting user with ID:", id);
+        const res = await axios.delete(
+            `${serverUrl}/api/v1/admin/users/${id}`,
+            {
+                withCredentials: true, // send cookies to the server
+            }
+        );
+
+        toast.success("User deleted successfully");
+        setLoading(false);
+        // refresh the users list
+        getAllUsers();
+    } catch (error) {
+        console.log("Error deleting user", error);
+        toast.error(error.response.data.message);
+        setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const loginStatusGetUser = async () => {
+      const isLoggedIn = await userLoginStatus();
+
+      if (isLoggedIn) {
+        await getUser();
+      }
     };
 
-    useEffect(() => {
-       const loginStatusGetUser = async() => {
-            const isLoggedIn = await userLoginStatus();
-            if (isLoggedIn){
-                   getUser();
-            }
-       }
+    loginStatusGetUser();
+  }, []);
 
-       loginStatusGetUser();
-    }, []);
+  useEffect(() => {
+    if (user.role === "admin") {
+      getAllUsers();
+    }
+  }, [user.role]);
 
-    return (
-        <UserContext.Provider 
-            value={{
-                registerUser, 
-                userState,
-                handlerUserInput,
-                loginUser,
-                logoutUser,
-                userLoginStatus,
-                user,
-                updateUser,
-                emailVerification,
-                verifyUser,
-                forgotPasswordEmail,
-                }}>
-            {children}
-        </UserContext.Provider>
-    )
+  return (
+    <UserContext.Provider
+      value={{
+        registerUser,
+        userState,
+        handlerUserInput,
+        loginUser,
+        logoutUser,
+        userLoginStatus,
+        user,
+        updateUser,
+        emailVerification,
+        verifyUser,
+        forgotPasswordEmail,
+        resetPassword,
+        changePassword,
+        allUsers,
+        deleteUser,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const useUserContext = () => {
-    return useContext(UserContext);
+  return useContext(UserContext);
 };

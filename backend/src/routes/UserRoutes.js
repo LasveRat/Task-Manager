@@ -26,7 +26,7 @@ router.get("/user" , protect , getUser);
 router.patch("/user" , protect , updateUser); 
 
 // admin routes
-router.delete("/admin/user/:id" , protect , adminMiddleware , deleteUser);
+router.delete("/admin/users/:id" , protect , adminMiddleware , deleteUser);
 
 // get all users
 router.get("/admin/users" , protect , creatorMiddleware , getAllUsers);
@@ -48,6 +48,8 @@ router.post("/reset-password/:resetPasswordToken" , resetPassword);
 
 // change password ---> user must be logged in
 router.patch("/change-password" , protect , changePassword);
+
+
 
 
 export default router;
