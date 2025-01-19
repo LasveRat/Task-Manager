@@ -8,11 +8,7 @@ interface MainContentLayoutProps {
 
 function MainContentLayout({ children }: MainContentLayoutProps) {
   const userId = useUserContext().user._id;
-  return (
-    <div className={`${userId ? "pr-[20rem]" : ""} pb-[1.5rem] flex h-full`}>
-      {children}
-    </div>
-  );
+  return <div className={`pr-[20rem] pb-[1.5rem] flex h-full`}>{children}</div>;
 }
 
 export default MainContentLayout;

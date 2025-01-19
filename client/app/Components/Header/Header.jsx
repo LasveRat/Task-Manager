@@ -1,12 +1,15 @@
 "use client";
 import { useUserContext } from "@/context/userContext";
 import { github, profile, moon } from "@/utils/icons";
+import { useRouter } from "next/navigation";
 
 import Link from "next/link";
 import React from "react";
 
 function Header() {
   const { user } = useUserContext();
+
+  const router = useRouter();
 
   const { name } = user;
   const userId = user._id;
@@ -38,7 +41,7 @@ function Header() {
             if (userId) {
               openModalForAdd();
             } else {
-              router.push("/login");
+              router.push("/Login");
             }
           }}
         >
