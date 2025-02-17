@@ -7,63 +7,100 @@ import IconStopwatch from "@/public/icons/IconStopwatch";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import IconDeleteAll from "@/public/icons/IconDeleteAll";
 
 function MiniSidebar() {
   const pathname = usePathname();
+  const [isExpanded, setIsExpanded] = useState(true);
 
-  const getstrokeColor = (link: string) => {
+  const toggleSidebar = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  const getStrokeColor = (link) => {
     return pathname === link ? "#3aafae" : "#71717a";
   };
 
   const navItems = [
     {
-      icon: <IconGrid strokeColor={getstrokeColor("/")} />,
-      title: "All",
+      icon: <IconGrid strokeColor={getStrokeColor("/")} />,
+      title: "All Tasks",
       link: "/",
     },
     {
-      icon: <IconFileCheck strokeColor={getstrokeColor("/completed")} />,
+      icon: <IconFileCheck strokeColor={getStrokeColor("/completed")} />,
       title: "Completed",
       link: "/completed",
     },
     {
-      icon: <IconCheck strokeColor={getstrokeColor("/pending")} />,
+      icon: <IconCheck strokeColor={getStrokeColor("/pending")} />,
       title: "Pending",
       link: "/pending",
     },
     {
-      icon: <IconStopwatch strokeColor={getstrokeColor("/overdue")} />,
+      icon: <IconStopwatch strokeColor={getStrokeColor("/overdue")} />,
       title: "Overdue",
       link: "/overdue",
     },
   ];
+
   return (
-    <div className="basis-[6.5rem] flex flex-col bg-[#f9f9f9]">
-      <div className=" flex times-center justify-center h-[5rem] ">
-        <Image src="/logo.png" alt="logo" width={200} height={200} />
+    <div
+      className={`bg-[#181a20] text-white flex flex-col transition-all ${
+        isExpanded ? "w-60" : "w-16"
+      } h-screen p-3 relative`}
+    >
+      {/* Logo & Toggle Button */}
+      <div className="flex items-center justify-between">
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={32}
+          height={32}
+          className="transition-all"
+        />
+        <button
+          onClick={toggleSidebar}
+          className="p-2 rounded-full hover:bg-gray-700 transition-all"
+        >
+          <IoChevronBack
+            className={`text-xl ${isExpanded ? "rotate-0" : "rotate-180"}`}
+          />
+        </button>
       </div>
 
-      <div className="mt-8 flex-1 flex flex-col items-center justify-between ">
-        <ul className="flex flex-col gap-10">
-          {navItems.map((item, index) => (
-            <li key={index} className="relative group">
-              <Link href={item.link}> {item.icon}</Link>
-
-              {/* Hover Tooltip */}
-              <span className="u-triangle absolute top-[50%] translate-y-[-50%] left-8 text-xs pointer-events-none text-white bg-[#3aafae] px-2 py-1 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      {/* Navigation Section */}
+      <ul className="mt-6 flex flex-col gap-4">
+        {navItems.map((item, index) => (
+          <li key={index} className="relative group">
+            <Link
+              href={item.link}
+              className={`flex items-center gap-4 px-3 py-2 rounded-md hover:bg-gray-700 transition-all ${
+                pathname === item.link ? "bg-gray-700" : ""
+              }`}
+            >
+              {item.icon}
+              <span
+                className={`${isExpanded ? "block" : "hidden"} transition-all`}
+              >
                 {item.title}
               </span>
-            </li>
-          ))}
-        </ul>
+            </Link>
+            {!isExpanded && (
+              <span className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                {item.title}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
 
-        <div className="mb-[1.5rem]">
-          <button className="w-12 h-12 flex justify-center items-center border-2 border-[#EB4E31]  p-2 rounded-full">
-            <IconDeleteAll strokeColor="#EB4E31" />
-          </button>
-        </div>
+      {/* Delete Button */}
+      <div className="mt-auto flex justify-center">
+        <button className="w-12 h-12 flex justify-center items-center border-2 border-[#EB4E31] p-2 rounded-full">
+          <IconDeleteAll strokeColor="#EB4E31" />
+        </button>
       </div>
     </div>
   );

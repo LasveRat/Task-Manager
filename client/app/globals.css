@@ -2,32 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-  background-color: #f9f9f9;
-  height: 100vh;
-  position: relative;
-}
-
-.auth-page {
-  height: 100vh;
-  background: url("../public/Login2.jpg") center center fixed;
-}
-
-
-/* Utilities */
-
-.u-triangle::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -7px;
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 8px solid #3aafae;
-  transform: translateY(-50%);
-}
 
 @layer base {
   :root {
@@ -85,11 +59,31 @@ body{
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+body{
+  background-color: #f9f9f9;
+  height: 100vh;
+  position: relative;
+}
+
+.auth-page {
+  height: 100vh;
+  background: url("../public/Login2.jpg") center center fixed;
+}
+
+.main-layout::-webkit-scrollbar{
+  width: 0;
+}
+/* Utilities */
+
+.u-triangle::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 8px solid #3aafae;
+  transform: translateY(-50%);
 }
