@@ -1,39 +1,23 @@
 "use client";
 import { useTasks } from "@/context/taskContext";
-import Filters from "./Components/Filters/Filters";
-import TaskItem from "./Components/TaskItem/TaskItem";
 import { Task } from "@/utils/types";
-import { filteredTasks, formatDate } from "@/utils/utilities";
-import { useEffect } from "react";
+import { filteredTasks } from "@/utils/utilities";
+import Filters from "../Components/Filters/Filters";
+import TaskItem from "../Components/TaskItem/TaskItem";
 import { motion } from "framer-motion";
 import { container, item } from "@/utils/animations";
-import { useUserContext } from "@/context/userContext";
-import HomePage from "./HomePage/page";
 
 export default function Home() {
-  const { tasks, openModalForAdd, priority, setPriority } = useTasks();
-  const todaysTasks = tasks.filter(
-    (task: Task) => formatDate(task.dueDate) === "Today" && !task.completed
-  );
-  const filtered = filteredTasks(todaysTasks, priority);
-
-  const userContext = useUserContext(); // Get the user context
-  const userId = userContext?.user?._id; // Ensure safe access
-  useEffect(() => {
-    setPriority("today");
-  }, []);
-
-  // If user is not logged in, render landing page
-  if (!userId) {
-    return <HomePage />;
-  }
+  const { tasks, openModalForAdd, priority, completedTasks } = useTasks();
+  const filtered = filteredTasks(completedTasks, priority);
 
   return (
     <main className="m-6 h-full">
       <div className="flex justify-between">
-        <h1 className="text-2xl font-bold">Today</h1>
+        <h1 className="text-2xl font-bold">Completed Tasks</h1>
         <Filters />
       </div>
+
       <motion.div
         className="pb-[2rem] mt-6 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-[1.5rem]"
         variants={container}

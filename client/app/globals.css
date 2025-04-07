@@ -87,3 +87,19 @@ body{
   border-right: 8px solid #3aafae;
   transform: translateY(-50%);
 }
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-blink {
+  animation: blink 5s infinite;
+}

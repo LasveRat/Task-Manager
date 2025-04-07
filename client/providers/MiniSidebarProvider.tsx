@@ -1,9 +1,8 @@
-"use client";
-import Sidebar from "@/app/Components/Sidebar/Sidebar";
+import MiniSidebar from "@/app/Components/MiniSidebar/MiniSidebar";
 import { useUserContext } from "@/context/userContext";
 import React from "react";
 
-function SidebarProvider() {
+function MiniSidebarProvider() {
   const userContext = useUserContext(); // Get the user context
   const userId = userContext?.user?._id; // Ensure safe access
 
@@ -12,7 +11,7 @@ function SidebarProvider() {
     return null;
   }
 
-  return <Sidebar />;
+  return <MiniSidebar />;
 }
 
-export default SidebarProvider;
+export default MiniSidebarProvider;

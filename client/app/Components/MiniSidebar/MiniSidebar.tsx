@@ -1,5 +1,4 @@
 "use client";
-
 import IconCheck from "@/public/icons/IconCheck";
 import IconFileCheck from "@/public/icons/IconFileCheck";
 import IconGrid from "@/public/icons/IconGrid";
@@ -8,7 +7,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import IconDeleteAll from "@/public/icons/IconDeleteAll";
+import { IoChevronBack } from "react-icons/io5";
 
 function MiniSidebar() {
   const pathname = usePathname();
@@ -18,20 +17,15 @@ function MiniSidebar() {
     setIsExpanded(!isExpanded);
   };
 
-  const getStrokeColor = (link) => {
+  const getStrokeColor = (link: string) => {
     return pathname === link ? "#3aafae" : "#71717a";
   };
 
   const navItems = [
     {
       icon: <IconGrid strokeColor={getStrokeColor("/")} />,
-      title: "All Tasks",
+      title: "Today",
       link: "/",
-    },
-    {
-      icon: <IconFileCheck strokeColor={getStrokeColor("/completed")} />,
-      title: "Completed",
-      link: "/completed",
     },
     {
       icon: <IconCheck strokeColor={getStrokeColor("/pending")} />,
@@ -39,30 +33,30 @@ function MiniSidebar() {
       link: "/pending",
     },
     {
-      icon: <IconStopwatch strokeColor={getStrokeColor("/overdue")} />,
-      title: "Overdue",
-      link: "/overdue",
+      icon: <IconFileCheck strokeColor={getStrokeColor("/completed")} />,
+      title: "Completed",
+      link: "/completed",
     },
   ];
 
   return (
     <div
-      className={`bg-[#181a20] text-white flex flex-col transition-all ${
-        isExpanded ? "w-60" : "w-16"
+      className={`bg-[#f9f9f9] flex flex-col transition-all ${
+        isExpanded ? "w-60" : "w-20"
       } h-screen p-3 relative`}
     >
       {/* Logo & Toggle Button */}
       <div className="flex items-center justify-between">
         <Image
-          src="/logo.png"
+          src={`${isExpanded ? "/Logo-White.png" : "/Small-Logo-White.png"}`}
           alt="logo"
-          width={32}
-          height={32}
+          width={160}
+          height={170}
           className="transition-all"
         />
         <button
           onClick={toggleSidebar}
-          className="p-2 rounded-full hover:bg-gray-700 transition-all"
+          className="p-2 mt-4 rounded-sm hover:bg-gray-200 transition-all"
         >
           <IoChevronBack
             className={`text-xl ${isExpanded ? "rotate-0" : "rotate-180"}`}
@@ -71,13 +65,13 @@ function MiniSidebar() {
       </div>
 
       {/* Navigation Section */}
-      <ul className="mt-6 flex flex-col gap-4">
+      <ul className="mt-[150px] flex flex-col gap-4">
         {navItems.map((item, index) => (
           <li key={index} className="relative group">
             <Link
               href={item.link}
-              className={`flex items-center gap-4 px-3 py-2 rounded-md hover:bg-gray-700 transition-all ${
-                pathname === item.link ? "bg-gray-700" : ""
+              className={`flex items-center gap-4 px-3 py-2 rounded-md hover:bg-gray-300 transition-all ${
+                pathname === item.link ? "bg-gray-300" : ""
               }`}
             >
               {item.icon}
@@ -88,20 +82,13 @@ function MiniSidebar() {
               </span>
             </Link>
             {!isExpanded && (
-              <span className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="absolute left-16 top-1/2 transform -translate-y-1/2 bg-gray-300 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
                 {item.title}
               </span>
             )}
           </li>
         ))}
       </ul>
-
-      {/* Delete Button */}
-      <div className="mt-auto flex justify-center">
-        <button className="w-12 h-12 flex justify-center items-center border-2 border-[#EB4E31] p-2 rounded-full">
-          <IconDeleteAll strokeColor="#EB4E31" />
-        </button>
-      </div>
     </div>
   );
 }

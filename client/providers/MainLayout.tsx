@@ -17,5 +17,4 @@ function MainLayout({ children }: MainLayoutProps) {
     </div>
   );
 }
-
 export default MainLayout;

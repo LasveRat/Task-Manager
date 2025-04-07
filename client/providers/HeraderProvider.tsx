@@ -1,9 +1,8 @@
-"use client";
-import Sidebar from "@/app/Components/Sidebar/Sidebar";
+import Header from "@/app/Components/Header/Header";
 import { useUserContext } from "@/context/userContext";
 import React from "react";
 
-function SidebarProvider() {
+function HeraderProvider() {
   const userContext = useUserContext(); // Get the user context
   const userId = userContext?.user?._id; // Ensure safe access
 
@@ -12,7 +11,7 @@ function SidebarProvider() {
     return null;
   }
 
-  return <Sidebar />;
+  return <Header />;
 }
 
-export default SidebarProvider;
+export default HeraderProvider;
