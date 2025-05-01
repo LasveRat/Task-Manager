@@ -26,7 +26,7 @@ export default function RootLayout({
       </head>
       <body>
         <UserProvider>
-          <Toaster position="top-center" />
+          <Toaster />
           <div className="h-full flex overflow-hidden">
             <MiniSidebarProvider />
             <div className="flex-1 flex flex-col">

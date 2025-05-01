@@ -2,6 +2,12 @@ import axios from "axios";
 import React , { act, createContext, useEffect } from "react";
 import { useUserContext } from "./userContext";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import { IoClose } from "react-icons/io5";
+import { FaInfoCircle } from "react-icons/fa";
+
+
 
 const TasksContext = createContext();
 
@@ -19,6 +25,8 @@ export const TasksProvider = ({ children }) => {
     const [activeTask , setActiveTask] = React.useState(null);
     const [modalMode , setModalMode] = React.useState("");
     const [profileModal , setProfileModal] = React.useState(false);
+    const router = useRouter();
+    const hasShownToast = useRef(false);
 
     // open modal for add task
     const openModalForAdd = () => {
@@ -71,6 +79,8 @@ export const TasksProvider = ({ children }) => {
         }
         setLoading(false);
     };
+
+
 
     // create task
     const createTask = async (task) => {
@@ -138,6 +148,34 @@ export const TasksProvider = ({ children }) => {
     
     }, [userId ]);
 
+    useEffect(() => {
+        if (hasShownToast.current || tasks.length === 0) return;
+      
+        const now = new Date();
+        const overdueTasks = tasks.filter((task) => {
+          const dueDate = new Date(task.dueDate);
+          return !task.completed && dueDate < now;
+        });
+      
+        if (overdueTasks.length > 0) {
+          toast((t) => (
+            <span className="flex items-center gap-2">
+                <FaInfoCircle className="m-5"/>
+              <strong className="text-xl">You have {overdueTasks.length} overdue task{overdueTasks.length > 1 ? 's' : ''}</strong>
+              <button
+                onClick={() => {
+                  router.push("/pending");``
+                  toast.dismiss(t.id);
+                }}
+                className="text-blue-500 underline"
+              >
+                View
+              </button>
+            </span>
+          ));
+          hasShownToast.current = true;
+        }
+      }, [tasks]);
     return (
         <TasksContext.Provider 
             value={{

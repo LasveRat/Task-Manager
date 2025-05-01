@@ -88,6 +88,31 @@ function MiniSidebar() {
             )}
           </li>
         ))}
+        <hr className="my-4 border-t border-gray-300" />
+        <span
+          className={`${
+            isExpanded ? "block px-3 text-sm text-gray-500 uppercase" : "hidden"
+          }`}
+        >
+          Custom files
+        </span>
+        <li className="relative group mt-2">
+          <button
+            onClick={() => {
+              // Navigate to create folder page
+              window.location.href = "/Create-Folder"; // you can also use router.push if using next/router
+            }}
+            className="flex items-center gap-4 px-3 py-2 rounded-md hover:bg-gray-300 transition-all w-full"
+          >
+            <IconFileCheck strokeColor="#71717a" />{" "}
+            {/* Use any icon you prefer */}
+            <span
+              className={`${isExpanded ? "block" : "hidden"} transition-all`}
+            >
+              Add New Folder
+            </span>
+          </button>
+        </li>
       </ul>
     </div>
   );
